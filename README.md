@@ -9,7 +9,7 @@
 * morgan (logger)(v1.5.1)
 
 # MongoDB Setting
-* MongoDB: http://www.mongodb.org/downloads
+* MongoDB(v2.6.7): http://www.mongodb.org/downloads
   * C:\Program Files\MongoDB 2.6 Standard\bin>mongod.exe --dbpath c:\test\mongodb\data 
 * mongojs(v0.18.1)
-* MongoDB management tool: http://robomongo.org/
+* MongoDB management tool(v0.8.4): http://robomongo.org/
