@@ -1,5 +1,6 @@
 # RESTServer
-Simple REST Server example
+* Simple REST Server example
+* Support jsonp
 
 # Node.js Setting
 * node.js(v0.10.36): http://www.nodejs.org/
