@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>Test</title>
+    <script src="https://code.jquery.com/jquery-2.1.3.js"></script>
+
+	<script>
+    function test() {
+        (function ($) {
+            var url = 'http://172.21.111.44:3000/markers?callback=?';
+            $.ajax({
+                type: 'GET',
+                url: url,
+                async: false,
+                jsonpCallback: 'jsonCallback',
+                contentType: "application/json",
+                dataType: 'jsonp',
+                success: function (json) {
+                    console.log(json);
+                },
+                error: function (e) {
+                    console.log("fail");
+                }
+            });
+
+        })(jQuery);
+    }
+</script>
+</head>
+<body>
+<div onclick="test()">Test</div>
+</body>
+</html>
