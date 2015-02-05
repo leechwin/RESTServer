@@ -1,32 +1,192 @@
 <html>
 <head>
-    <title>Test</title>
+    <title>REST Client Test</title>
     <script src="https://code.jquery.com/jquery-2.1.3.js"></script>
+    <script>
+    var baseURL = 'http://172.21.111.44:3000';
 
-	<script>
-    function test() {
-        (function ($) {
-            var url = 'http://172.21.111.44:3000/markers?callback=?';
-            $.ajax({
-                type: 'GET',
-                url: url,
-                async: false,
-                jsonpCallback: 'jsonCallback',
-                contentType: "application/json",
-                dataType: 'jsonp',
-                success: function (json) {
-                    console.log(json);
-                },
-                error: function (e) {
-                    console.log("fail");
-                }
-            });
-
-        })(jQuery);
+    function clean() {
+        $('#result').html("");
     }
-</script>
+
+    function postUserTest() {
+        clean();
+        var url = baseURL + '/users';
+        var user =  {
+            email: "changhyun3.lee@samsung.com",
+            password: "1234",
+            markers: []
+        };
+        $.ajax({
+            type: 'POST',
+            url: url,
+            crossDomain: true,
+            data: user,
+            dataType: 'json',
+            success: function (data) {
+                $('#result').html('Success: post user');
+                console.log('Success: post user');
+            },
+            error: function (e) {
+                $('#result').html('Fail: post user');
+                console.log('Fail: post user');
+            }
+        });
+
+    }
+
+    function getUserTest() {
+        clean();
+        var url = baseURL + '/users?callback=?';
+        $.ajax({
+            type: 'GET',
+            url: url,
+            async: false,
+            jsonpCallback: 'jsonCallback',
+            contentType: "application/json",
+            dataType: 'jsonp',
+            success: function (data) {
+                $('#result').html(JSON.stringify(data, null, 4));
+                console.log('Success: get user');
+            },
+            error: function (e) {
+                $('#result').html('Fail: get users');
+                console.log('Fail: get users');
+            }
+        });
+    }
+
+    function postCommentTest() {
+        clean();
+        var url = baseURL + '/markers/comment';
+        var data =  {
+            _id: "111.111-222.222",
+            comment: "Added Comment"
+        };
+        $.ajax({
+            type: 'POST',
+            url: url,
+            crossDomain: true,
+            data: data,
+            dataType: 'json',
+            success: function (data) {
+                $('#result').html('Success: update comment');
+                console.log('Success: update comment');
+            },
+            error: function (e) {
+                $('#result').html('Fail: update commnet');
+                console.log('Fail: update commnet');
+            }
+        });
+    }
+
+    function postScoreTest() {
+        clean();
+        var url = baseURL + '/markers/score';
+        var data =  {
+            _id: "111.111-222.222",
+            score: 35
+        };
+        $.ajax({
+            type: 'POST',
+            url: url,
+            crossDomain: true,
+            data: data,
+            dataType: 'json',
+            success: function (data) {
+                $('#result').html('Success: update score');
+                console.log('Success: update score');
+            },
+            error: function (e) {
+                $('#result').html('Fail: update score');
+                console.log('Fail: update score');
+            }
+        });
+    }
+
+    function getMarkerTest() {
+        clean();
+        var url = baseURL + '/markers?callback=?';
+        $.ajax({
+            type: 'GET',
+            url: url,
+            async: false,
+            jsonpCallback: 'jsonCallback',
+            contentType: "application/json",
+            dataType: 'jsonp',
+            success: function (data) {
+                $('#result').html(JSON.stringify(data, null, 4));
+                console.log('Success: get marker');
+            },
+            error: function (e) {
+                $('#result').html('Fail: get markers');
+                console.log('Fail: get marker');
+            }
+        });
+    }
+
+    function postMarkerTest() {
+        clean();
+        var url = baseURL + '/markers';
+        var data =  {
+            coordinate: {"x":"111.111", "y":"222.222"},
+            description: "testFood",
+            comment: ["Good"],
+            score: [20],
+            category: "food",
+            author: "changhyun1.lee@samsung.com",
+            temp:""
+        };
+        $.ajax({
+            type: 'POST',
+            url: url,
+            crossDomain: true,
+            data: data,
+            dataType: 'json',
+            success: function (data) {
+                $('#result').html('Success: post markers');
+                console.log('Success: post markers');
+            },
+            error: function (e) {
+                $('#result').html('Fail: post markers');
+                console.log('Fail: post markers');
+            }
+        });
+    }
+
+    function removeMarkerTest () {
+        clean();
+        var url = baseURL + '/markers';
+        var data =  {
+            _id: "111.111-222.222",
+        };
+        $.ajax({
+            type: 'DELETE',
+            url: url,
+            crossDomain: true,
+            data: data,
+            dataType: 'json',
+            success: function (data) {
+                $('#result').html('Success: delete marker');
+                console.log('Success: delete marker');
+            },
+            error: function (e) {
+                $('#result').html('Fail: delete marker');
+                console.log('Fail: delete marker');
+            }
+        });
+    }
+    </script>
 </head>
 <body>
-<div onclick="test()">Test</div>
+<button onclick="postUserTest()">Post User Test</button>
+<button onclick="getUserTest()">Get User Test</button>
+<button onclick="postCommentTest()">Post Comment Test</button>
+<button onclick="postScoreTest()">Post Score Test</button>
+<button onclick="getMarkerTest()">Get Marker Test</button>
+<button onclick="postMarkerTest()">Post Marker Test</button>
+<button onclick="removeMarkerTest()">Remove Marker Test</button>
+<br><br>
+<div id="result"></div>
 </body>
 </html>
