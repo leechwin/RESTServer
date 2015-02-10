@@ -3,7 +3,7 @@
     <title>REST Client Test</title>
     <script src="https://code.jquery.com/jquery-2.1.3.js"></script>
     <script>
-    var baseURL = 'http://172.21.111.44:3000';
+    var baseURL = 'http://172.21.100.210:3000';
 
     function clean() {
         $('#result').html("");
@@ -32,7 +32,6 @@
                 console.log('Fail: post user');
             }
         });
-
     }
 
     function getUserTest() {
@@ -52,6 +51,30 @@
             error: function (e) {
                 $('#result').html('Fail: get users');
                 console.log('Fail: get users');
+            }
+        });
+    }
+
+    function loginTest() {
+        clean();
+        var url = baseURL + '/users/login';
+        var user =  {
+            email: "changhyun3.lee@samsung.com",
+            password: "1234",
+        };
+        $.ajax({
+            type: 'POST',
+            url: url,
+            crossDomain: true,
+            data: user,
+            dataType: 'json',
+            success: function (data) {
+                $('#result').html('Success: login user');
+                console.log('Success: login user');
+            },
+            error: function (e) {
+                $('#result').html('Fail: login user');
+                console.log('Fail: post login');
             }
         });
     }
@@ -135,7 +158,7 @@
             score: [20],
             category: "food",
             author: "changhyun1.lee@samsung.com",
-            temp:""
+            temp:"test"
         };
         $.ajax({
             type: 'POST',
@@ -176,16 +199,44 @@
             }
         });
     }
+    
+
     </script>
 </head>
 <body>
 <button onclick="postUserTest()">Post User Test</button>
 <button onclick="getUserTest()">Get User Test</button>
+<button onclick="loginTest()">Login Test</button>
 <button onclick="postCommentTest()">Post Comment Test</button>
 <button onclick="postScoreTest()">Post Score Test</button>
 <button onclick="getMarkerTest()">Get Marker Test</button>
 <button onclick="postMarkerTest()">Post Marker Test</button>
 <button onclick="removeMarkerTest()">Remove Marker Test</button>
+<br>
+
+<form id="target" enctype="multipart/form-data">
+    <input name="image" type="file" />
+    <input type="submit" value="Upload1" />
+</form>
+<script>
+    $( "#target" ).submit(function( event ) {
+       var baseURL = 'http://172.21.100.210:3000';
+       var url = baseURL + '/markers/image';
+       var form = $('form')[0];
+       var formData = new FormData(form);
+         $.ajax({
+            type: 'POST',
+            url: url,
+            crossDomain: true,
+            data: formData,
+            processData: false, // Don't process the files
+            contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+            success: function(result){
+                console.log('success upload');
+            }
+        });
+     });
+</script>
 <br><br>
 <div id="result"></div>
 </body>

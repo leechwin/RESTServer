@@ -57,7 +57,7 @@ app.post('/users', function(request, response) {
                 } else {
                     db.users.insert({
                         email: email,
-                        password: password,
+                        password: getHash(password),
                         markers: []
                     }, function (error, result) {
                         if (error) {
@@ -91,9 +91,8 @@ app.post('/users/login', function(request, response) {
                 email: email
             }, function (error, result) {
                 if (result) {
-                    if (password === result.password) {
-                        // TODO:: login logic
-                        response.send(200);
+                    if (getHash(password) === result.password) {
+                        response.send(result);
                     } else {
                         response.send(401);
                     }
@@ -165,7 +164,7 @@ app.post('/markers', function(request, response) {
                         score: data.score,
                         category: data.category,
                         author: data.author,
-                        temp: ""
+                        temp: data.temp
                     }, function (error, result) {
                         if (error) {
                             response.send(500);
@@ -302,6 +301,27 @@ app.delete('/markers', function(request, response) {
     });
 });
 
+// TODO::
+app.post('/markers/image', function(request, response) {
+    console.log('---------------');   
+    console.log(request.files);
+    console.log('---------------');
+  
+    response.send('request');
+});
+
+
 http.createServer(app).listen(3000, function() {
     console.log('Express server listening on port 3000');
 });
+
+
+/**
+ * Get Hash
+  * @param password
+ */
+function getHash(password) {
+    var shasum = require('crypto').createHash('sha1');
+    shasum.update(password);
+    return shasum.digest('hex');
+}
