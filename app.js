@@ -95,16 +95,20 @@ app.post('/users/login', function(request, response) {
             }, function (error, result) {
                 if (result) {
                     if (getHash(password) === result.password) {
+                        console.log('login success')
                         response.send(result);
                     } else {
+                        console.log('login fail')
                         response.send(401);
                     }
                 } else {
+                    console.log('login fail')
                     response.send(409);
                 }
             }
         );
     } else {
+        console.log('login fail')
         response.send(400);
     }
 });
@@ -167,6 +171,7 @@ app.post('/markers', function(request, response) {
                         score: data.score,
                         category: data.category,
                         author: data.author,
+                        images: data.images,
                         temp: data.temp
                     }, function (error, result) {
                         if (error) {
@@ -320,6 +325,7 @@ app.post('/images/:id', function (request, response) {
         _id: request.params.id
     }, function (error, result) {
         if (result) {
+            console.log(request.files);
             fs.readFile(request.files.image.path, function (error,data) {
                 var destination = local_fs_path + request.files.image.name;
                 console.log(destination);

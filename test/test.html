@@ -213,7 +213,7 @@
             success: function (data) {
                 console.log(data);
                 console.log('Success: get image');
-                //var base = 'data:image/png;base64,'+data;
+                //var base = 'data:image/png;base64,'+data; // Embedding Base64 Images
                 $('#image').attr("src", data);
             },
             error: function (e) {
