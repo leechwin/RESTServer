@@ -199,7 +199,31 @@
             }
         });
     }
-    
+
+    function getImageTest() {
+        clean();
+        var baseURL = 'http://172.21.100.210:3000';
+        var url = baseURL + '/images' + '/e5364ffcf447ca0051c29ad1892dafb7.png';
+        $('#image').attr("src", url);
+/*
+        $.ajax({
+            type: 'GET',
+            url: url,
+            async: false,
+            success: function (data) {
+                console.log(data);
+                console.log('Success: get image');
+                //var base = 'data:image/png;base64,'+data;
+                $('#image').attr("src", data);
+            },
+            error: function (e) {
+                $('#result').html('Fail: get image');
+                console.log('Fail: get image');
+            }
+        });
+*/
+
+    }
 
     </script>
 </head>
@@ -215,16 +239,17 @@
 <br>
 
 <form id="target" enctype="multipart/form-data">
-    <input name="image" type="file" />
-    <input type="submit" value="Upload1" />
+    <input type="file" name="image" />
+    <input type="submit" value="Upload" />
 </form>
 <script>
     $( "#target" ).submit(function( event ) {
-       var baseURL = 'http://172.21.100.210:3000';
-       var url = baseURL + '/markers/image';
-       var form = $('form')[0];
-       var formData = new FormData(form);
-         $.ajax({
+        var baseURL = 'http://172.21.100.210:3000';
+        var url = baseURL + '/images/' +  "111.111-222.222";
+        var form = $('form')[0];
+        var formData = new FormData(form);
+
+        $.ajax({
             type: 'POST',
             url: url,
             crossDomain: true,
@@ -235,9 +260,12 @@
                 console.log('success upload');
             }
         });
-     });
+    });
 </script>
 <br><br>
+<button onclick="getImageTest()">Get Image Test</button>
+
 <div id="result"></div>
+<img id="image"></img>
 </body>
 </html>

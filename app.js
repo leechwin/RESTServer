@@ -3,6 +3,7 @@ var http = require('http');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var multer = require('multer');
+var fs = require('fs');
 
 var app = express();
 
@@ -20,7 +21,9 @@ app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
   next();
 });
- 
+
+var local_fs_path = __dirname + '\\..\\RESTServerUploaded\\';
+
 //app.use(express.session());
 //app.use(expreess.static('public'))
 
@@ -261,7 +264,7 @@ app.post('/markers/score', function(request, response) {
 /**
  * Find all marker
  */
-app.get('/markers', function(request, response) {
+app.get('/markers', function (request, response) {
     db.markers.find(function (error, results) {
         response.jsonp(results);
     });
@@ -271,7 +274,7 @@ app.get('/markers', function(request, response) {
  * Find all marker
  * @Deprecated
  */
-app.get('/markers/:id', function(request, response) {
+app.get('/markers/:id', function (request, response) {
     db.markers.findOne({
         _id: request.param('id') // FIXME::
     }, function (error, results) {
@@ -287,7 +290,7 @@ app.get('/markers/:id', function(request, response) {
  * Delete marker
  * @param id
  */
-app.delete('/markers', function(request, response) {
+app.delete('/markers', function (request, response) {
     console.log(request.body);
     console.log(request.body._id);
     db.markers.remove({
@@ -299,16 +302,76 @@ app.delete('/markers', function(request, response) {
             response.send(results);
         }
     });
+
+    // var ws =  fs.createWriteStream(destination);
+    // fs.createReadStream(req.files.myfile.path).pipe(ws);
+    // res.redirect('back');
 });
 
-// TODO::
-app.post('/markers/image', function(request, response) {
-    console.log('---------------');   
-    console.log(request.files);
-    console.log('---------------');
-  
-    response.send('request');
+/**
+ * Upload image
+ * @param id
+ * @param data
+ */
+app.post('/images/:id', function (request, response) {
+    // TODO:: register marker image data
+    console.log('---------------------');
+    db.markers.findOne({
+        _id: request.params.id
+    }, function (error, result) {
+        if (result) {
+            fs.readFile(request.files.image.path, function (error,data) {
+                var destination = local_fs_path + request.files.image.name;
+                console.log(destination);
+                fs.writeFile(destination, data, function (error) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log('success');
+                    }
+                });
+            });
+
+            var images = result.images;
+            images.push(request.files.image.name);
+
+            db.markers.update({
+                _id: request.params.id
+            }, {
+                 $set: {
+                    images: images
+                }
+            }, function (error, result) {
+                 if (result) {
+                     response.send(result);
+                 } else {
+                     response.send(500);
+                 }
+            });
+        } else {
+            response.send(500);
+        }
+    });
 });
+
+/**
+ * Get image
+ * @param ?
+ */
+app.get('/images/:path', function (request, response) {
+    // TODO:: get db?
+    var url = local_fs_path + request.params.path;
+
+    fs.readFile(url, function(error,data) {
+        if (error) {
+            console.log(error);
+        }
+        response.send(data);
+        //response.send(new Buffer(data).toString('base64'));
+        console.log('success');
+    });
+});
+
 
 
 http.createServer(app).listen(3000, function() {
@@ -320,7 +383,7 @@ http.createServer(app).listen(3000, function() {
  * Get Hash
   * @param password
  */
-function getHash(password) {
+function getHash( password ) {
     var shasum = require('crypto').createHash('sha1');
     shasum.update(password);
     return shasum.digest('hex');
