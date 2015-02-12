@@ -166,6 +166,7 @@ app.post('/markers', function(request, response) {
                     db.markers.insert({
                         _id: id,
                         coordinate: data.coordinate,
+                        address: data.address,
                         description: data.description,
                         comment: data.comment,
                         score: data.score,
@@ -326,34 +327,38 @@ app.post('/images/:id', function (request, response) {
     }, function (error, result) {
         if (result) {
             console.log(request.files);
-            fs.readFile(request.files.image.path, function (error,data) {
-                var destination = local_fs_path + request.files.image.name;
-                console.log(destination);
-                fs.writeFile(destination, data, function (error) {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        console.log('success');
-                    }
+            if ( Object.keys(request.files).length !== 0 ) {
+                fs.readFile(request.files.image.path, function (error,data) {
+                    var destination = local_fs_path + request.files.image.name;
+                    console.log(destination);
+                    fs.writeFile(destination, data, function (error) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log('success');
+                        }
+                    });
                 });
-            });
 
-            var images = result.images;
-            images.push(request.files.image.name);
-
-            db.markers.update({
-                _id: request.params.id
-            }, {
-                 $set: {
-                    images: images
-                }
-            }, function (error, result) {
-                 if (result) {
-                     response.send(result);
-                 } else {
-                     response.send(500);
-                 }
-            });
+                var images = result.images;
+                images.push(request.files.image.name);
+    
+                db.markers.update({
+                    _id: request.params.id
+                }, {
+                     $set: {
+                        images: images
+                    }
+                }, function (error, result) {
+                     if (result) {
+                         response.send(result);
+                     } else {
+                         response.send(500);
+                     }
+                });
+            } else {
+                response.send(500);
+            }
         } else {
             response.send(500);
         }
